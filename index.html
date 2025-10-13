@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahmed Soliman Developer (React, Next.js)</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: radial-gradient(circle at top left, #0a0a0a, #1a1a1a);
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 800px;
+        background: linear-gradient(135deg, #1c1c1f, #2a2a2f);
+        border-radius: 14px;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+        padding: 25px;
+        position: relative;
+      }
+
+      /* 🔊 Toggle */
+      .sound-toggle {
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        cursor: pointer;
+        font-size: 20px;
+        color: #ffd700;
+        transition: transform 0.2s ease, color 0.3s ease;
+        user-select: none;
+      }
+
+      .sound-toggle:hover {
+        transform: scale(1.2);
+        color: #ffbf00;
+      }
+
+      h1 {
+        text-align: center;
+        color: #ffd700;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        border-radius: 10px;
+        border: 1px solid #444;
+        background: #111;
+        color: #ffd;
+        font-size: 14px;
+        padding: 10px;
+        resize: vertical;
+        outline: none;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        flex: 1;
+        background: #333;
+        color: #ffd700;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.25s;
+      }
+
+      button:hover {
+        background: #ffd700;
+        color: #111;
+        transform: translateY(-2px);
+      }
+
+      #result {
+        margin-top: 15px;
+        padding: 15px;
+        border-radius: 10px;
+        background: #111;
+        border: 1px solid #444;
+        font-family: monospace;
+        min-height: 100px;
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+      }
+
+      /* Colors and animations */
+      .gold,
+      .double-gold {
+        color: #ffd700;
+        font-weight: bold;
+        animation: shimmer 2s infinite;
+      }
+
+      .purple,
+      .double-purple {
+        color: #b266ff;
+        font-weight: bold;
+      }
+
+      .next-floor {
+        color: #00ff9d;
+        font-weight: bold;
+        animation: glowgreen 2s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          text-shadow: 0 0 4px #ffd700;
+        }
+        50% {
+          text-shadow: 0 0 15px #ffbf00;
+        }
+        100% {
+          text-shadow: 0 0 4px #ffd700;
+        }
+      }
+
+      @keyframes glowgreen {
+        0%,
+        100% {
+          text-shadow: 0 0 6px #00ff9d;
+        }
+        50% {
+          text-shadow: 0 0 16px #00ffcc;
+        }
+      }
+
+      .loading {
+        text-align: center;
+        margin-top: 10px;
+        display: none;
+        color: #ffd700;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 14px;
+        color: #aaa;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</div>
+
+      <h1>AVA SCANNER</h1>
+      <textarea
+        id="hexInput"
+        placeholder="Enter your hex code here..."
+      ></textarea>
+
+      <div class="buttons">
+        <button id="scanBtn">🔍 Scan</button>
+        <button id="copyBtn">📋 Copy</button>
+        <button id="saveBtn">💾 Save</button>
+        <button id="clearBtn">✖ Clear</button>
+      </div>
+
+      <div id="loading" class="loading">⏳ Scanning...</div>
+      <div id="result">No matches yet.</div>
+
+      <!-- Footer -->
+      <div class="footer">
+        Build by Ahmed Soliman Developer (React, Next.js)
+      </div>
+
+      <!-- Jackpot Sound -->
+      <audio id="doubleGoldSound" preload="auto">
+        <source
+          src="../Ahmed Soliman Developer - AVA CHECKER/sounds/arabic-rythm-74123.mp3"
+          type="audio/mpeg"
+        />
+      </audio>
+    </div>
+
+    <script>
+      $(function () {
+        const pattern = "696e7374616e6365736c6f745f";
+        const entities = {
+          basilisk: "426173696c69736b",
+          archMage: "417263682d4d616765",
+          priest: "507269657374",
+          knightCaptain: "4b6e696768742d4361707461696e",
+          construct: "436f6e7374727563745f3031",
+          grailSanctum: "477261696c5f53616e6374756d",
+        };
+
+        const mobcount = {
+          mobs51: "4156415f54454d504c455f42415349435f434f524e45525f3031",
+          mobs79: "4156415f54454d504c455f42415349435f434f524e45525f3032",
+          mobs43: "4156415f54454d504c455f42415349435f434f524e45525f3033",
+          mobs44: "4156415f54454d504c455f42415349435f434f524e45525f3034",
+          mobs48: "4156415f54454d504c455f42415349435f434f524e45525f3035",
+          mobs42: "4156415f54454d504c455f42415349435f53545241494748545f3031",
+          mobs41: "4156415f54454d504c455f42415349435f53545241494748545f3032",
+          mobs56: "4156415f54454d504c455f42415349435f53545241494748545f3033",
+          mobs138: "4156415f54454d504c455f42415349435f53545241494748545f3034",
+        };
+
+        const sound = $("#doubleGoldSound")[0];
+        let soundEnabled = true;
+        let soundUnlocked = false;
+
+        $("#soundToggle").on("click", function () {
+          soundEnabled = !soundEnabled;
+          $(this).text(soundEnabled ? "🔊" : "🔇");
+          $(this).attr("title", soundEnabled ? "Sound On" : "Sound Off");
+        });
+
+        $(document).one("click keydown", () => {
+          sound
+            .play()
+            .then(() => {
+              sound.pause();
+              sound.currentTime = 0;
+              soundUnlocked = true;
+            })
+            .catch(() => {});
+        });
+
+        function showResult(html) {
+          $("#result").html(html || "No matches found.");
+        }
+
+        function scanHex() {
+          const hex = $("#hexInput")
+            .val()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "");
+          if (!hex) {
+            alert("Please enter a valid hex code!");
+            return;
+          }
+
+          $("#loading").show();
+          $("#result").html("");
+
+          setTimeout(() => {
+            let matchOutput = "";
+            let matchFound = false;
+            let foundDoubleGold = false;
+            const segments = hex.split(pattern);
+
+            segments.forEach((segment) => {
+              let foundMatchInSegment = false;
+
+              for (const [key, val] of Object.entries(mobcount)) {
+                if (segment.includes(val)) {
+                  matchOutput += `<span style="color:red;font-weight:bold;"> Mobs >>> ${key.replace(
+                    "mobs",
+                    ""
+                  )}</span>\n`;
+                  foundMatchInSegment = true;
+                }
+              }
+
+              function checkEntity(name, code) {
+                if (segment.includes(code)) {
+                  matchOutput += name + " >> ";
+                  if (segment.includes("4c617965725f3038")) {
+                    matchOutput +=
+                      '<span class="double-gold">[Double Gold]</span>\n';
+                    foundDoubleGold = true;
+                  } else if (segment.includes("4c617965725f3131")) {
+                    matchOutput +=
+                      '<span class="purple">[Double Purple]</span>\n';
+                  } else if (segment.includes("4c617965725f3130")) {
+                    matchOutput += '<span class="purple">[Purple]</span>\n';
+                  } else if (segment.includes("4c617965725f3039")) {
+                    matchOutput += '<span class="gold">[Gold]</span>\n';
+                  }
+                  foundMatchInSegment = true;
+                }
+              }
+
+              checkEntity("Basilisk", entities.basilisk);
+              checkEntity("Priest", entities.priest);
+              checkEntity("Arch Mage", entities.archMage);
+              checkEntity("Captain", entities.knightCaptain);
+              checkEntity("Construct", entities.construct);
+              checkEntity("King", entities.grailSanctum);
+
+              if (segment.includes("4156415f54454d504c455f45584954")) {
+                matchOutput += "<span class='next-floor'>Next Floor</span>\n";
+                foundMatchInSegment = true;
+              }
+
+              if (foundMatchInSegment) matchFound = true;
+            });
+
+            $("#loading").hide();
+            if (matchFound) {
+              showResult(matchOutput.trim().replace(/\n+/g, "\n"));
+              if (foundDoubleGold && soundEnabled && soundUnlocked) {
+                sound.currentTime = 0;
+                sound.play().catch(() => console.warn("Autoplay blocked."));
+              }
+            } else showResult("No matches found.");
+          }, 700);
+        }
+
+        $("#scanBtn").on("click", scanHex);
+        $("#clearBtn").on("click", () => {
+          $("#hexInput").val("");
+          showResult("No matches yet.");
+        });
+        $("#copyBtn").on("click", () => {
+          const text = $("#result").text().trim();
+          if (!text) return alert("Nothing to copy.");
+          navigator.clipboard.writeText(text);
+          alert("Copied to clipboard!");
+        });
+        $("#saveBtn").on("click", () => {
+          const text = $("#result").text().trim();
+          if (!text) return alert("Nothing to save.");
+          const blob = new Blob([text], { type: "text/plain" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = `AVA_Scan_${new Date()
+            .toISOString()
+            .replace(/[:.]/g, "-")}.txt`;
+          link.click();
+        });
+      });
+    </script>
+  </body>
+</html>
