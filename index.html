@@ -237,7 +237,6 @@
       <div class="buttons">
         <button id="scanBtn">🔍 Scan</button>
         <button id="copyBtn">📋 Copy</button>
-        <button id="saveBtn">💾 Save</button>
         <button id="clearBtn">✖ Clear</button>
       </div>
 
@@ -259,7 +258,6 @@
 
     <script>
       $(function () {
-        // same pattern, entities and mobcount as your original logic
         const pattern = "696e7374616e6365736c6f745f";
         const entities = {
           basilisk: "426173696c69736b",
@@ -292,9 +290,7 @@
 
         function showResult(html) {
           $result.html(html || "No matches found.");
-          // show/hide show more
           setTimeout(() => {
-            // wait for rendering
             if ($result[0].scrollHeight > $result[0].clientHeight) {
               $showMoreBtn.removeClass("hidden");
             } else {
@@ -324,9 +320,8 @@
 
           resetResultState();
           $loading.show();
-          showResult(""); // clear
+          showResult("");
 
-          // short simulated delay
           setTimeout(() => {
             let matchOutput = "";
             let matchFound = false;
@@ -339,7 +334,7 @@
             segments.forEach((segment) => {
               let foundMatchInSegment = false;
 
-              // check mobcounts
+              // Check mobs
               for (const [key, val] of Object.entries(mobcount)) {
                 if (segment.includes(val)) {
                   matchOutput += `<span class="mobs"> Mobs >>> ${key.replace(
@@ -350,38 +345,117 @@
                 }
               }
 
-              // helper to check entities and reward markers
-              function checkEntity(name, code) {
-                if (segment.includes(code)) {
-                  matchOutput += `${name} >> `;
-                  // check reward markers (these markers are from your original code)
-                  if (segment.includes("4c617965725f3038")) {
-                    // double gold marker
-                    matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
-                    foundDoubleGold = true;
-                  } else if (segment.includes("4c617965725f3131")) {
-                    // double purple marker
-                    matchOutput += `<span class="purple">[Double Purple]</span>\n`;
-                  } else if (segment.includes("4c617965725f3130")) {
-                    // purple marker
-                    matchOutput += `<span class="purple">[Purple]</span>\n`;
-                  } else if (segment.includes("4c617965725f3039")) {
-                    // gold marker
-                    matchOutput += `<span class="gold">[Gold]</span>\n`;
-                    foundGold = true;
-                  } else {
-                    matchOutput += `\n`;
-                  }
-                  foundMatchInSegment = true;
+              // Check Basilisk
+              if (segment.includes(entities.basilisk)) {
+                matchOutput += `Basilisk >> `;
+                if (segment.includes("4c617965725f3038")) {
+                  matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
+                  foundDoubleGold = true;
+                } else if (segment.includes("4c617965725f3131")) {
+                  matchOutput += `<span class="purple">[Double Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3130")) {
+                  matchOutput += `<span class="purple">[Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3039")) {
+                  matchOutput += `<span class="gold">[Gold]</span>\n`;
+                  foundGold = true;
+                } else {
+                  matchOutput += `\n`;
                 }
+                foundMatchInSegment = true;
               }
 
-              checkEntity("Basilisk", entities.basilisk);
-              checkEntity("Priest", entities.priest);
-              checkEntity("Arch Mage", entities.archMage);
-              checkEntity("Captain", entities.knightCaptain);
-              checkEntity("Construct", entities.construct);
-              checkEntity("King", entities.grailSanctum);
+              // Check Priest
+              if (segment.includes(entities.priest)) {
+                matchOutput += `Free Boss >> `;
+                if (segment.includes("4c617965725f3038")) {
+                  matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
+                  foundDoubleGold = true;
+                } else if (segment.includes("4c617965725f3131")) {
+                  matchOutput += `<span class="purple">[Double Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3130")) {
+                  matchOutput += `<span class="purple">[Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3039")) {
+                  matchOutput += `<span class="gold">[Gold]</span>\n`;
+                  foundGold = true;
+                } else {
+                  matchOutput += `\n`;
+                }
+                foundMatchInSegment = true;
+              }
+
+              // Check Arch Mage
+              if (segment.includes(entities.archMage)) {
+                matchOutput += `Dancing Queen >> `;
+                if (segment.includes("4c617965725f3038")) {
+                  matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
+                  foundDoubleGold = true;
+                } else if (segment.includes("4c617965725f3039")) {
+                  matchOutput += `<span class="gold">[Gold]</span>\n`;
+                  foundGold = true;
+                } else if (segment.includes("4c617965725f3131")) {
+                  matchOutput += `<span class="purple">[Double Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3130")) {
+                  matchOutput += `<span class="purple">[Purple]</span>\n`;
+                } else {
+                  matchOutput += `\n`;
+                }
+                foundMatchInSegment = true;
+              }
+
+              // Check Captain
+              if (segment.includes(entities.knightCaptain)) {
+                matchOutput += `Captain >> `;
+                if (segment.includes("4c617965725f3038")) {
+                  matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
+                  foundDoubleGold = true;
+                } else if (segment.includes("4c617965725f3039")) {
+                  matchOutput += `<span class="gold">[Gold]</span>\n`;
+                  foundGold = true;
+                } else if (segment.includes("4c617965725f3130")) {
+                  matchOutput += `<span class="purple">[Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3131")) {
+                  matchOutput += `<span class="purple">[Double Purple]</span>\n`;
+                } else {
+                  matchOutput += `\n`;
+                }
+                foundMatchInSegment = true;
+              }
+
+              // Check Construct
+              if (segment.includes(entities.construct)) {
+                matchOutput += `Construct >> `;
+                if (segment.includes("4c617965725f3036")) {
+                  matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
+                  foundDoubleGold = true;
+                } else if (segment.includes("4c617965725f3037")) {
+                  matchOutput += `<span class="gold">[Gold]</span>\n`;
+                  foundGold = true;
+                } else if (segment.includes("4c617965725f3038")) {
+                  matchOutput += `<span class="purple">[Purple]</span>\n`;
+                } else if (segment.includes("4c617965725f3039")) {
+                  matchOutput += `<span class="purple">[Double Purple]</span>\n`;
+                } else {
+                  matchOutput += `\n`;
+                }
+                foundMatchInSegment = true;
+              }
+
+              // Check King - FIXED WITH CORRECT LAYER PATTERNS
+              if (segment.includes(entities.grailSanctum)) {
+                matchOutput += `Final Boss >> `;
+                if (segment.includes("4c617965725f3032")) {
+                  matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
+                  foundDoubleGold = true;
+                } else if (segment.includes("4c617965725f3034")) {
+                  matchOutput += `<span class="gold">[Gold]</span>\n`;
+                  foundGold = true;
+                } else if (segment.includes("4c617965725f3035")) {
+                  matchOutput += `<span class="purple">[Double Purple]</span>\n`;
+                } else {
+                  matchOutput += `\n`;
+                }
+                foundMatchInSegment = true;
+              }
 
               // Next floor marker
               if (segment.includes("4156415f54454d504c455f45584954")) {
@@ -395,12 +469,10 @@
 
             $loading.hide();
 
-            // apply UI states
+            // Apply UI states
             if (foundDoubleGold) {
-              // strong double gold animation
               $result.addClass("flash-double");
             } else if (foundGold) {
-              // simple gold animation
               $result.addClass("flash-gold");
             }
 
@@ -411,7 +483,6 @@
             }
 
             if (matchFound) {
-              // tidy up output spacing and show
               showResult(matchOutput.trim().replace(/\n+/g, "\n"));
             } else {
               showResult("No matches found.");
@@ -419,7 +490,7 @@
           }, 600);
         }
 
-        // buttons
+        // Button events
         $("#scanBtn").on("click", scanHex);
 
         $("#clearBtn").on("click", () => {
@@ -438,21 +509,7 @@
             .catch(() => alert("Copy failed."));
         });
 
-        $("#saveBtn").on("click", () => {
-          const text = $result.text().trim();
-          if (!text) return alert("Nothing to save.");
-          const blob = new Blob([text], { type: "text/plain" });
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = `AVA_Scan_${new Date()
-            .toISOString()
-            .replace(/[:.]/g, "-")}.txt`;
-          link.click();
-          URL.revokeObjectURL(link.href);
-        });
-
-        // show/hide showMore based on content
-        // ensure the button visibility correct on load
+        // Show/hide showMore based on content
         setTimeout(() => {
           if ($result[0].scrollHeight > $result[0].clientHeight)
             $showMoreBtn.removeClass("hidden");
