@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ahmed Soliman Developer (React, Next.js)</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AVA SCANNER - Ahmed Soliman Dev</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
+      :root {
+        --bg1: #0a0a0a;
+        --bg2: #1a1a1a;
+        --panel1: #1c1c1f;
+        --panel2: #2a2a2f;
+        --gold: #ffd700;
+        --gold-strong: #ffdf5a;
+        --purple: #b266ff;
+        --green: #00ff9d;
+        --muted: #aaa;
+        --danger: #ff4d4d;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
       body {
         font-family: "Segoe UI", Arial, sans-serif;
-        background: radial-gradient(circle at top left, #0a0a0a, #1a1a1a);
+        background: radial-gradient(circle at top left, var(--bg1), var(--bg2));
         color: #fff;
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        margin: 0;
       }
 
       .container {
-        width: 90%;
-        max-width: 800px;
-        background: linear-gradient(135deg, #1c1c1f, #2a2a2f);
+        width: 92%;
+        max-width: 880px;
+        background: linear-gradient(135deg, var(--panel1), var(--panel2));
         border-radius: 14px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-        padding: 25px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+        padding: 22px;
         position: relative;
-      }
-
-      /* 🔊 Toggle */
-      .sound-toggle {
-        position: absolute;
-        top: 14px;
-        right: 16px;
-        cursor: pointer;
-        font-size: 20px;
-        color: #ffd700;
-        transition: transform 0.2s ease, color 0.3s ease;
-        user-select: none;
-      }
-
-      .sound-toggle:hover {
-        transform: scale(1.2);
-        color: #ffbf00;
       }
 
       h1 {
         text-align: center;
-        color: #ffd700;
-        margin-bottom: 20px;
+        color: var(--gold);
+        margin: 0 0 16px 0;
         font-weight: 700;
       }
 
@@ -56,116 +56,179 @@
         min-height: 120px;
         border-radius: 10px;
         border: 1px solid #444;
-        background: #111;
+        background: #0f0f10;
         color: #ffd;
         font-size: 14px;
-        padding: 10px;
+        padding: 12px;
         resize: vertical;
         outline: none;
+        box-sizing: border-box;
       }
 
       .buttons {
         display: flex;
         gap: 10px;
-        margin-top: 15px;
+        margin-top: 14px;
         flex-wrap: wrap;
       }
 
       button {
         flex: 1;
         background: #333;
-        color: #ffd700;
+        color: var(--gold);
         border: none;
         border-radius: 8px;
-        padding: 10px;
-        font-weight: bold;
+        padding: 10px 12px;
+        font-weight: 700;
         cursor: pointer;
-        transition: all 0.25s;
+        transition: all 0.18s ease;
       }
 
       button:hover {
-        background: #ffd700;
+        background: var(--gold);
         color: #111;
         transform: translateY(-2px);
       }
 
       #result {
-        margin-top: 15px;
-        padding: 15px;
+        margin-top: 14px;
+        padding: 14px;
         border-radius: 10px;
-        background: #111;
+        background: #0f0f10;
         border: 1px solid #444;
         font-family: monospace;
-        min-height: 100px;
-        max-height: 300px;
+        min-height: 120px;
+        max-height: 340px;
         overflow-y: auto;
         white-space: pre-wrap;
+        transition: box-shadow 0.25s ease, border-color 0.25s ease,
+          transform 0.15s ease;
+        position: relative;
       }
 
-      /* Colors and animations */
-      .gold,
-      .double-gold {
-        color: #ffd700;
-        font-weight: bold;
-        animation: shimmer 2s infinite;
+      /* states for next floor / missing next floor */
+      #result.has-next {
+        border-color: rgba(0, 255, 157, 0.35);
+        box-shadow: 0 6px 18px rgba(0, 255, 157, 0.06),
+          0 0 0 3px rgba(0, 255, 157, 0.02) inset;
       }
 
-      .purple,
-      .double-purple {
-        color: #b266ff;
-        font-weight: bold;
+      #result.no-next {
+        border-color: rgba(255, 77, 77, 0.35);
+        box-shadow: 0 6px 18px rgba(255, 77, 77, 0.06),
+          0 0 0 3px rgba(255, 77, 77, 0.02) inset;
       }
 
-      .next-floor {
-        color: #00ff9d;
-        font-weight: bold;
-        animation: glowgreen 2s infinite;
-      }
-
-      @keyframes shimmer {
+      /* gold animations */
+      @keyframes pulseGold {
         0% {
-          text-shadow: 0 0 4px #ffd700;
+          box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+          transform: scale(1);
         }
         50% {
-          text-shadow: 0 0 15px #ffbf00;
+          box-shadow: 0 0 24px 6px rgba(255, 215, 0, 0.12);
+          transform: scale(1.02);
         }
         100% {
-          text-shadow: 0 0 4px #ffd700;
+          box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+          transform: scale(1);
+        }
+      }
+      @keyframes pulseDoubleGold {
+        0% {
+          box-shadow: 0 0 0 0 rgba(255, 223, 90, 0);
+          transform: scale(1);
+        }
+        40% {
+          box-shadow: 0 0 40px 8px rgba(255, 223, 90, 0.18);
+          transform: scale(1.03);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(255, 223, 90, 0);
+          transform: scale(1);
         }
       }
 
-      @keyframes glowgreen {
-        0%,
-        100% {
-          text-shadow: 0 0 6px #00ff9d;
-        }
-        50% {
-          text-shadow: 0 0 16px #00ffcc;
-        }
+      /* applied to whole result box when gold/double found */
+      #result.flash-gold {
+        animation: pulseGold 1.2s ease-in-out 1;
+        border-color: rgba(255, 215, 0, 0.45);
       }
+      #result.flash-double {
+        animation: pulseDoubleGold 1.2s ease-in-out 1;
+        border-color: rgba(255, 223, 90, 0.6);
+      }
+
+      .gold {
+        color: var(--gold);
+        font-weight: 700;
+        filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.25));
+      }
+      .double-gold {
+        color: var(--gold-strong);
+        font-weight: 900;
+        text-shadow: 0 0 10px rgba(255, 223, 90, 0.35);
+      }
+      .purple {
+        color: var(--purple);
+        font-weight: 700;
+      }
+      .next-floor {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .mobs {
+        color: #ff6b6b;
+        font-weight: 700;
+      } /* red-ish for mobs */
 
       .loading {
-        text-align: center;
-        margin-top: 10px;
         display: none;
-        color: #ffd700;
+        margin-top: 8px;
+        color: var(--gold);
+        text-align: center;
       }
 
-      /* Footer */
       .footer {
         text-align: center;
-        margin-top: 25px;
-        font-size: 14px;
-        color: #aaa;
+        margin-top: 18px;
+        font-size: 13px;
+        color: var(--muted);
         font-style: italic;
+      }
+
+      /* Show more button */
+      .show-more {
+        margin-top: 10px;
+        display: block;
+        width: 100%;
+        background: #444;
+        color: #fff;
+        border: none;
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .show-more.hidden {
+        display: none;
+      }
+
+      /* responsive tweaks */
+      @media (max-width: 520px) {
+        .container {
+          padding: 16px;
+        }
+        button {
+          font-size: 14px;
+          padding: 8px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</div>
-
       <h1>AVA SCANNER</h1>
+
       <textarea
         id="hexInput"
         placeholder="Enter your hex code here..."
@@ -179,24 +242,24 @@
       </div>
 
       <div id="loading" class="loading">⏳ Scanning...</div>
-      <div id="result">No matches yet.</div>
 
-      <!-- Footer -->
+      <div id="result" aria-live="polite">No matches yet.</div>
+      <button
+        id="showMoreBtn"
+        class="show-more hidden"
+        onclick="toggleExpand()"
+      >
+        Show More
+      </button>
+
       <div class="footer">
         Build by Ahmed Soliman Developer (React, Next.js)
       </div>
-
-      <!-- Jackpot Sound -->
-      <audio id="doubleGoldSound" preload="auto">
-        <source
-          src="../Ahmed Soliman Developer - AVA CHECKER/sounds/arabic-rythm-74123.mp3"
-          type="audio/mpeg"
-        />
-      </audio>
     </div>
 
     <script>
       $(function () {
+        // same pattern, entities and mobcount as your original logic
         const pattern = "696e7374616e6365736c6f745f";
         const entities = {
           basilisk: "426173696c69736b",
@@ -219,57 +282,67 @@
           mobs138: "4156415f54454d504c455f42415349435f53545241494748545f3034",
         };
 
-        const sound = $("#doubleGoldSound")[0];
-        let soundEnabled = true;
-        let soundUnlocked = false;
+        const $result = $("#result");
+        const $loading = $("#loading");
+        const $showMoreBtn = $("#showMoreBtn");
 
-        $("#soundToggle").on("click", function () {
-          soundEnabled = !soundEnabled;
-          $(this).text(soundEnabled ? "🔊" : "🔇");
-          $(this).attr("title", soundEnabled ? "Sound On" : "Sound Off");
-        });
-
-        $(document).one("click keydown", () => {
-          sound
-            .play()
-            .then(() => {
-              sound.pause();
-              sound.currentTime = 0;
-              soundUnlocked = true;
-            })
-            .catch(() => {});
-        });
+        function resetResultState() {
+          $result.removeClass("flash-gold flash-double has-next no-next");
+        }
 
         function showResult(html) {
-          $("#result").html(html || "No matches found.");
+          $result.html(html || "No matches found.");
+          // show/hide show more
+          setTimeout(() => {
+            // wait for rendering
+            if ($result[0].scrollHeight > $result[0].clientHeight) {
+              $showMoreBtn.removeClass("hidden");
+            } else {
+              $showMoreBtn.addClass("hidden");
+            }
+          }, 10);
+        }
+
+        function toggleExpand() {
+          $result.toggleClass("expanded");
+          if ($result.hasClass("expanded")) {
+            $result.css("max-height", "600px");
+            $showMoreBtn.text("Show Less");
+          } else {
+            $result.css("max-height", "");
+            $showMoreBtn.text("Show More");
+          }
         }
 
         function scanHex() {
-          const hex = $("#hexInput")
-            .val()
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, "");
+          const raw = $("#hexInput").val() || "";
+          const hex = raw.trim().toLowerCase().replace(/\s+/g, "");
           if (!hex) {
             alert("Please enter a valid hex code!");
             return;
           }
 
-          $("#loading").show();
-          $("#result").html("");
+          resetResultState();
+          $loading.show();
+          showResult(""); // clear
 
+          // short simulated delay
           setTimeout(() => {
             let matchOutput = "";
             let matchFound = false;
             let foundDoubleGold = false;
+            let foundGold = false;
+            let hasNextFloor = false;
+
             const segments = hex.split(pattern);
 
             segments.forEach((segment) => {
               let foundMatchInSegment = false;
 
+              // check mobcounts
               for (const [key, val] of Object.entries(mobcount)) {
                 if (segment.includes(val)) {
-                  matchOutput += `<span style="color:red;font-weight:bold;"> Mobs >>> ${key.replace(
+                  matchOutput += `<span class="mobs"> Mobs >>> ${key.replace(
                     "mobs",
                     ""
                   )}</span>\n`;
@@ -277,20 +350,27 @@
                 }
               }
 
+              // helper to check entities and reward markers
               function checkEntity(name, code) {
                 if (segment.includes(code)) {
-                  matchOutput += name + " >> ";
+                  matchOutput += `${name} >> `;
+                  // check reward markers (these markers are from your original code)
                   if (segment.includes("4c617965725f3038")) {
-                    matchOutput +=
-                      '<span class="double-gold">[Double Gold]</span>\n';
+                    // double gold marker
+                    matchOutput += `<span class="double-gold">[Double Gold]</span>\n`;
                     foundDoubleGold = true;
                   } else if (segment.includes("4c617965725f3131")) {
-                    matchOutput +=
-                      '<span class="purple">[Double Purple]</span>\n';
+                    // double purple marker
+                    matchOutput += `<span class="purple">[Double Purple]</span>\n`;
                   } else if (segment.includes("4c617965725f3130")) {
-                    matchOutput += '<span class="purple">[Purple]</span>\n';
+                    // purple marker
+                    matchOutput += `<span class="purple">[Purple]</span>\n`;
                   } else if (segment.includes("4c617965725f3039")) {
-                    matchOutput += '<span class="gold">[Gold]</span>\n';
+                    // gold marker
+                    matchOutput += `<span class="gold">[Gold]</span>\n`;
+                    foundGold = true;
+                  } else {
+                    matchOutput += `\n`;
                   }
                   foundMatchInSegment = true;
                 }
@@ -303,38 +383,63 @@
               checkEntity("Construct", entities.construct);
               checkEntity("King", entities.grailSanctum);
 
+              // Next floor marker
               if (segment.includes("4156415f54454d504c455f45584954")) {
-                matchOutput += "<span class='next-floor'>Next Floor</span>\n";
+                matchOutput += `<span class="next-floor">Next Floor --->></span>\n`;
+                hasNextFloor = true;
                 foundMatchInSegment = true;
               }
 
               if (foundMatchInSegment) matchFound = true;
             });
 
-            $("#loading").hide();
+            $loading.hide();
+
+            // apply UI states
+            if (foundDoubleGold) {
+              // strong double gold animation
+              $result.addClass("flash-double");
+            } else if (foundGold) {
+              // simple gold animation
+              $result.addClass("flash-gold");
+            }
+
+            if (hasNextFloor) {
+              $result.addClass("has-next");
+            } else {
+              $result.addClass("no-next");
+            }
+
             if (matchFound) {
+              // tidy up output spacing and show
               showResult(matchOutput.trim().replace(/\n+/g, "\n"));
-              if (foundDoubleGold && soundEnabled && soundUnlocked) {
-                sound.currentTime = 0;
-                sound.play().catch(() => console.warn("Autoplay blocked."));
-              }
-            } else showResult("No matches found.");
-          }, 700);
+            } else {
+              showResult("No matches found.");
+            }
+          }, 600);
         }
 
+        // buttons
         $("#scanBtn").on("click", scanHex);
+
         $("#clearBtn").on("click", () => {
           $("#hexInput").val("");
+          resetResultState();
           showResult("No matches yet.");
+          $showMoreBtn.addClass("hidden");
         });
+
         $("#copyBtn").on("click", () => {
-          const text = $("#result").text().trim();
+          const text = $result.text().trim();
           if (!text) return alert("Nothing to copy.");
-          navigator.clipboard.writeText(text);
-          alert("Copied to clipboard!");
+          navigator.clipboard
+            .writeText(text)
+            .then(() => alert("Copied to clipboard!"))
+            .catch(() => alert("Copy failed."));
         });
+
         $("#saveBtn").on("click", () => {
-          const text = $("#result").text().trim();
+          const text = $result.text().trim();
           if (!text) return alert("Nothing to save.");
           const blob = new Blob([text], { type: "text/plain" });
           const link = document.createElement("a");
@@ -343,7 +448,15 @@
             .toISOString()
             .replace(/[:.]/g, "-")}.txt`;
           link.click();
+          URL.revokeObjectURL(link.href);
         });
+
+        // show/hide showMore based on content
+        // ensure the button visibility correct on load
+        setTimeout(() => {
+          if ($result[0].scrollHeight > $result[0].clientHeight)
+            $showMoreBtn.removeClass("hidden");
+        }, 50);
       });
     </script>
   </body>
